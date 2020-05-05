@@ -30,4 +30,3 @@ unzip /tmp/iterm.zip -d /Applications
 #vscode
 curl -L "https://go.microsoft.com/fwlink/?LinkID=620882" -o /tmp/vscode.zip
 unzip /tmp/vscode.zip -d /Applications
-

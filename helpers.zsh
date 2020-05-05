@@ -2,16 +2,22 @@ find_text () {
     grep $1 $2
 }
 
-add_to_path_first () {
+prepend_to_path () {
     newPath=$1:$PATH
     typeset -U parts
     parts=("${(@s/:/)newPath}")
     PATH=${(j|:|)parts}
 }
 
-add_to_path () {
+append_to_path () {
     newPath=$1:$PATH
     typeset -U parts
     parts=("${(@s/:/)newPath}")
     PATH=${(j|:|)parts}
+}
+
+kickstart () {
+  mkdir $1 && cd $1 && git init && npm init -y && code .
+  echo "Node $(node -v)"
+  echo "You're awesome 🤘"
 }
