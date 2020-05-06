@@ -21,3 +21,4 @@ kickstart () {
   echo "Node $(node -v)"
   echo "You're awesome 🤘"
 }
+

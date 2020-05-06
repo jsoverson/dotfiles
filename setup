@@ -1,5 +1,10 @@
 #!/bin/zsh
-SETUP_DIR=$0:A:h
+
+export SETUP_DIR=$0:A:h
+
+mkdir -p /usr/local/share/zsh/site-functions
+chmod 755 /usr/local/share/zsh
+chmod 755 /usr/local/share/zsh/site-functions
 
 #oh-my-zsh
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -13,6 +18,7 @@ fi
 . $SETUP_DIR/source.zsh
 
 $SETUP_DIR/init/directories.zsh
+$SETUP_DIR/init/theme.zsh
 source $SETUP_DIR/helpers.zsh
 
 SOURCE_LINES='export DOTFILES_SOURCED=true
@@ -33,3 +39,6 @@ else
     fi
     echo $SOURCE_LINES >> ~/.zshrc
 fi
+
+$SETUP_DIR/install.zsh
+$SETUP_DIR/osx-preferences.sh
