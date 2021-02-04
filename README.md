@@ -5,5 +5,8 @@ Put together in 2020 and assumes base configuration for that era's latest Macboo
 ## Usage
 
 ```
-$ git clone https://github.com/jsoverson/dotfiles.git ~/.dotfiles
+$ xcode-select --install
+$ git clone https://github.com/jsoverson/dotfiles.git ~/dotfiles
 $ ./dotfiles/setup
+```
+

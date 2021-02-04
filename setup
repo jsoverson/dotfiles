@@ -1,5 +1,11 @@
 #!/bin/zsh
 
+echo "Running software update. If your device restarts, run setup again"
+
+sudo softwareupdate -i -a --restart
+
+echo "Running software update. If your device restarts, run setup again"
+
 export SETUP_DIR=$0:A:h
 
 mkdir -p /usr/local/share/zsh/site-functions
