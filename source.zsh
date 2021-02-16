@@ -31,4 +31,6 @@ source "$DOTFILES_DIR/source-$(uname | tr '[:upper:]' '[:lower:]').zsh"
 function gitlab() {
   git clone ssh://git@gitlab.lan:30001/$1/$2.git
 }
+bindkey \^U backward-kill-line
+
 dev
