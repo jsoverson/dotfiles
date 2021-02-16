@@ -3,5 +3,5 @@ alias ll="ls -alh"
 
 alias np='np --no-yarn --no-cleanup'
 
-git config --global alias.co checko1ut
+git config --global alias.co checkout
 
