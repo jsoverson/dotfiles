@@ -33,4 +33,15 @@ function gitlab() {
 }
 bindkey \^U backward-kill-line
 
+unsetopt share_history
+setopt inc_append_history
+
+function wc-actorid() {
+  wash claims inspect -o json $1 $2 | jq -r '.module'
+}
+
+function wc-providerkey() {
+  wash par inspect -o json $1 $2 | jq -r '.public_key'
+}
+
 dev
