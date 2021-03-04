@@ -1,6 +1,15 @@
+#!/bin/bash
+
+set -e
+
+DEV="$HOME/development"
+DOCS="$HOME/Documents"
+
 mkdir -p $DEV/src
 mkdir -p $DEV/bin
 mkdir -p $DEV/vendor
 mkdir -p $DEV/tools
 
 mkdir -p $DOCS/screenshots
+
+sudo mkdir -p /nfs/home
