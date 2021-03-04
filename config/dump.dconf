@@ -1,3 +1,96 @@
+[org/gnome/desktop/interface]
+gtk-im-module='gtk-im-context-simple'
+gtk-theme='Yaru-dark'
+
+[org/gnome/desktop/wm/keybindings]
+activate-window-menu=@as []
+begin-move=@as []
+begin-resize=@as []
+close=['<Super>q']
+cycle-group=['<Super>grave']
+cycle-group-backward=['<Shift><Super>grave']
+cycle-panels=@as []
+cycle-panels-backward=@as []
+cycle-windows=@as []
+cycle-windows-backward=@as []
+maximize=['<Primary><Alt>Return']
+minimize=@as []
+move-to-monitor-down=@as []
+move-to-monitor-left=@as []
+move-to-monitor-right=@as []
+move-to-monitor-up=@as []
+move-to-workspace-1=@as []
+move-to-workspace-down=@as []
+move-to-workspace-last=@as []
+move-to-workspace-up=@as []
+panel-main-menu=@as []
+panel-run-dialog=@as []
+show-desktop=@as []
+switch-applications=@as []
+switch-applications-backward=@as []
+switch-group=@as []
+switch-group-backward=@as []
+switch-input-source=@as []
+switch-input-source-backward=@as []
+switch-panels=@as []
+switch-panels-backward=@as []
+switch-to-workspace-1=@as []
+switch-to-workspace-down=@as []
+switch-to-workspace-last=@as []
+switch-to-workspace-left=@as []
+switch-to-workspace-up=@as []
+switch-windows=['<Super>Tab']
+switch-windows-backward=['<Shift><Super>Tab']
+toggle-maximized=@as []
+unmaximize=@as []
+
+[org/gnome/mutter]
+overlay-key='Super_R'
+
+[org/gnome/mutter/keybindings]
+toggle-tiled-left=['<Primary><Alt>Left']
+toggle-tiled-right=['<Primary><Alt>Right']
+
+[org/gnome/mutter/wayland/keybindings]
+restore-shortcuts=@as []
+
+[org/gnome/settings-daemon/plugins/media-keys]
+area-screenshot=['<Shift><Super>dollar']
+area-screenshot-clip=['<Shift><Super>at']
+logout=@as []
+magnifier=@as []
+magnifier-zoom-in=@as []
+magnifier-zoom-out=@as []
+screenreader=@as []
+screensaver=@as []
+screenshot-clip=@as []
+search=@as []
+terminal=@as []
+window-screenshot=['<Shift><Super>percent']
+window-screenshot-clip=['<Shift><Super>numbersign']
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-timeout=3600
+sleep-inactive-ac-type='nothing'
+
+[org/gnome/settings-daemon/plugins/xsettings]
+hinting='slight'
+
+[org/gnome/shell/extensions/dash-to-dock]
+dock-fixed=false
+dock-position='BOTTOM'
+preferred-monitor=0
+
+[org/gnome/shell/keybindings]
+focus-active-notification=@as []
+open-application-menu=@as []
+toggle-application-view=@as []
+toggle-message-tray=@as []
+toggle-overview=@as []
+
+[org/gnome/system/location]
+enabled=false
+
 [org/gnome/terminal/legacy]
 menu-accelerator-enabled=false
 theme-variant='dark'
@@ -18,4 +111,3 @@ select-all='disabled'
 background-color='rgb(0,29,37)'
 font='Fira Mono 17'
 foreground-color='rgb(188,204,206)'
-
