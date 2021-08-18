@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-get install cmake
+
+BINTEST="wasm2wat"
+
+TEMP_DIR="/tmp"
+LOCALBIN_DIR="$DEV/bin"
+
+if [[ ! -x wasm2wat ]]; then
+  if [[ -d /tmp/wabt ]]; then
+    rm -rf /tmp/wabt
+  fi
+  DIR=$TEMP_DIR/wabt
+  git clone git@github.com:WebAssembly/wabt.git $DIR
+  cd $DIR
+  git submodule update --init
+  mkdir $DIR/build
+  cd $DIR/build
+  cmake -DBUILD_TESTS=OFF ..
+  cmake --build .
+  find . -maxdepth 1 -type f -executable | grep -vi cmake | xargs -I{} cp {} $LOCALBIN_DIR
+else
+  echo "Found wasm2wat in path, not reinstalling wabt"
+fi

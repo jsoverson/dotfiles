@@ -1,20 +1,28 @@
 export DOTFILES_DIR=$0:A:h
 
-source $DOTFILES_DIR/source/helpers.zshrc
+# rebind ^U to delete to the start of the line, not erase the entire line
+bindkey \^U backward-kill-line
 
+# helper functions
+source $DOTFILES_DIR/source/functions.zshrc
+
+# add dotfiles bin to path
 prepend_to_path $DOTFILES_DIR/bin
+
+# add development bin to path
 prepend_to_path $HOME/development/bin
 
+#
 source $DOTFILES_DIR/source/environment.zshrc
 source $DOTFILES_DIR/source/alias.zshrc
 
 source $DOTFILES_DIR/source/source-$(platform).zshrc
-source $DOTFILES_DIR/source/local.zshrc
 source $DOTFILES_DIR/source/development.zshrc
 
-bindkey \^U backward-kill-line
+if [[ -f $HOME/local.zshrc ]]; then
+  source $HOME/local.zshrc
+fi
 
-unsetopt share_history
-setopt inc_append_history
-
-dev
+setopt INC_APPEND_HISTORY
+unsetopt SHARE_HISTORY
+unset RPROMPT

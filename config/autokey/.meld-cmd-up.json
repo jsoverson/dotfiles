@@ -1,0 +1,31 @@
+{
+    "type": "phrase",
+    "description": "meld-cmd-up",
+    "modes": [
+        3
+    ],
+    "usageCount": 12,
+    "prompt": false,
+    "omitTrigger": false,
+    "matchCase": false,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [
+            "<super>"
+        ],
+        "hotKey": "<up>"
+    },
+    "filter": {
+        "regex": "org.gnome.meld.Meld",
+        "isRecursive": false
+    },
+    "sendMode": "kb"
+}

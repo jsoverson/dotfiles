@@ -1,3 +1,5 @@
+alias ll="ls -alFh"
+
 alias dev="cd $DEV/src"
 
 alias np='np --no-yarn --no-cleanup'
@@ -5,4 +7,8 @@ alias np='np --no-yarn --no-cleanup'
 git config --global alias.co checkout
 
 # command to reload this file
-alias reload_dotfiles="source $DOTFILES_DIR/source.zsh"
+function reload_dotfiles() {
+  source "$DOTFILES_DIR/source.zshrc"
+  cd -
+}
+alias cplast="fc -ln -1 -1 | pbcopy"

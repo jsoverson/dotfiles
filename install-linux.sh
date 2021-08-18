@@ -4,11 +4,27 @@ set -e
 
 sudo apt update && sudo apt upgrade -y
 
-sudo apt install zsh snapd gnome-tweaks xclip vim autokey-gtk openssh-server libssl-dev jq autokey-qt nfs-common -y
+sudo apt install zsh snapd gnome-tweaks xclip vim autokey-gtk openssh-server libssl-dev jq autokey-qt nfs-common tmux cmake -y
 
 sudo snap install --no-wait --edge 1password
 
 sudo snap install code
+
+# Generate default ssh keys
+if [[ ! -d $HOME/.ssh ]]; then
+  mkdir $HOME/.ssh
+fi
+ssh-keygen -N "" -f $HOME/.ssh/id_rsa
+
+# Oh-my-tmux
+
+git clone https://github.com/gpakosz/.tmux.git $HOME/.tmux
+ln -s -f $HOME/.tmux/.tmux.conf $HOME/.tmux.conf
+cp $HOME/.tmux/.tmux.conf.local $HOME
+
+# tmux plugin manager
+
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # Autokey config for mac-like shortcuts
 if [[ ! -L $HOME/.config/autokey/data/mac-shortcuts ]]; then
@@ -95,9 +111,14 @@ if [[ ! -x $(which rustup) ]]; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 fi
 
+# cargo utils
 source $HOME/.cargo/env
 cargo install cargo-generate cargo-make cargo-add
+
+# wasm runtime target for rust
 rustup target add wasm32-unknown-unknown
+
+# wabt - web assembly binary toolkit
 
 # docker-sync
 sudo apt -y install ruby2.7-dev

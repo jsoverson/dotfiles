@@ -7,3 +7,6 @@ alias devw="dev && cd wasmcloud-dev-environment/projects/"
 
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
+
+# remap left alt 
+xmodmap -e 'keycode 64 = Hyper_L'
