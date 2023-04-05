@@ -9,6 +9,9 @@ source $DOTFILES_DIR/source/functions.zshrc
 # add dotfiles bin to path
 prepend_to_path $DOTFILES_DIR/bin
 
+
+echo 3
+echo $PATH
 # add development bin to path
 prepend_to_path $HOME/development/bin
 

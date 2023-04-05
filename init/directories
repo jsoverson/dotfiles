@@ -12,4 +12,4 @@ mkdir -p $DEV/tools
 
 mkdir -p $DOCS/screenshots
 
-sudo mkdir -p /nfs/home
+#sudo mkdir -p /nfs/home

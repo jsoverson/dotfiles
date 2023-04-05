@@ -113,27 +113,10 @@ fi
 
 # cargo utils
 source $HOME/.cargo/env
-cargo install cargo-generate cargo-make cargo-add
-
-# wasm runtime target for rust
-rustup target add wasm32-unknown-unknown
+cargo install cargo-generate cargo-add just
 
 # wabt - web assembly binary toolkit
 
 # docker-sync
 sudo apt -y install ruby2.7-dev
 gem install --user-install docker-sync
-
-# unison (for docker-sync)
-if [[ ! -x ~/development/bin/unison ]]; then
-  LAST=$PWD
-  cd /tmp
-  sudo apt-get install build-essential ocaml -y
-  wget https://github.com/bcpierce00/unison/archive/v2.51.3.tar.gz
-  tar xvf v2.51.3.tar.gz
-  cd unison-2.51.3
-  make UISTYLE=text
-  sudo cp src/unison ~/development/bin/unison
-  sudo cp src/unison-fsmonitor ~/development/bin/unison-fsmonitor
-  cd $LAST
-fi

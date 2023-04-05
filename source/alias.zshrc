@@ -11,4 +11,7 @@ function reload_dotfiles() {
   source "$DOTFILES_DIR/source.zshrc"
   cd -
 }
+
 alias cplast="fc -ln -1 -1 | pbcopy"
+
+alias reload-local="source ~/local.zshrc"

@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/zsh
 
 set -e
 
-DOTFILES_DIR="$(readlink -f $(dirname $0))"
-export DOTFILES_DIR
+export DOTFILES_DIR=$0:A:h
+
 PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
 
 $DOTFILES_DIR/init/directories
