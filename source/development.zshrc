@@ -38,3 +38,5 @@ function project-diff() {
 
   ydiff $dir1/$file $dir2/$file
 }
+
+source ~/.nvm/nvm.sh
