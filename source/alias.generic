@@ -1,0 +1,12 @@
+alias ll="ls -alFh"
+
+alias dev="cd $DEV/src"
+
+alias np='np --no-yarn --no-cleanup'
+
+git config --global alias.co checkout
+
+alias cplast="fc -ln -1 -1 | pbcopy"
+
+alias reload-local="source ~/local.$SHELL_EXT"
+alias reload-dotfiles="source $DOTFILES_DIR/source.$SHELL_EXT"

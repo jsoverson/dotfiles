@@ -78,21 +78,13 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 
-# docker machine
-if [[ ! -x $(which docker-machine) ]]; then
-  curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
-    chmod +x /tmp/docker-machine &&
-    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
 
-  # proxmox docker machine driver
-  curl -Lo $HOME/development/bin/docker-machine-driver-proxmoxve https://github.com/lnxbil/docker-machine-driver-proxmox-ve/releases/download/v4/docker-machine-driver-proxmoxve.linux-amd64
-  chmod a+x $HOME/development/bin/docker-machine-driver-proxmoxve
-fi
-
-# docker-compose
-if [[ ! -x $(which docker-compose) ]]; then
-  curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o ~/development/bin/docker-compose
-  chmod a+x ~/development/bin/docker-compose
+# fisher
+if [[ ! -x $(which fisher) ]]; then
+  echo "TODO: install fisher"
+  # curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+  echo TODO: install nvm.fish
+  # fisher install jorgebucaran/nvm.fish
 fi
 
 # nvm & node LTS

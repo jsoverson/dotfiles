@@ -1,5 +1,7 @@
 export DOTFILES_DIR=$0:A:h
 
+export SHELL_EXT="zshrc"
+
 # rebind ^U to delete to the start of the line, not erase the entire line
 bindkey \^U backward-kill-line
 
@@ -14,7 +16,7 @@ prepend_to_path $DOTFILES_DIR/bin
 prepend_to_path $HOME/development/bin
 
 #
-source $DOTFILES_DIR/source/environment.zshrc
+source $DOTFILES_DIR/source/environment.env
 source $DOTFILES_DIR/source/alias.zshrc
 
 source $DOTFILES_DIR/source/source-$(platform).zshrc
