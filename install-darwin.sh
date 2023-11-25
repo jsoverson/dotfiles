@@ -51,10 +51,8 @@ if ! type "/Applications/Visual Studio Code.app/Contents/MacOS/Electron" >/dev/n
 fi
 
 if ! type "/Applications/Alfred.app/Contents/MacOS/Alfred" >/dev/null; then
-  curl -L "https://cachefly.alfredapp.com/Alfred_4.0.9_1144.dmg" -o /tmp/alfred.dmg
+  curl -L "https://cachefly.alfredapp.com/Alfred_5.1.4_2195.dmg" -o /tmp/alfred.dmg
   hdiutil mount /tmp/alfred.dmg
-  # sudo cp -R "/Volumes/Firefox/Firefox.app" /Applications
-  # hdiutil unmount "/Volumes/Firefox/"
 fi
 
 ./osx-preferences.sh
