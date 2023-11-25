@@ -3,7 +3,7 @@
 set -e
 
 function exists {
-  type $1 2>/dev/null >/dev/null
+  type "$1" 2>/dev/null >/dev/null
 }
 
 function brew_install {
