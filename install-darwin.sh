@@ -74,4 +74,8 @@ if ! exists source_dotfiles; then
   echo "source_dotfiles" >> ~/.zshrc
 fi
 
+if ! exists "rustup"; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
+
 ./osx-preferences.sh
