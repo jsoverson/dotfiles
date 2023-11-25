@@ -22,12 +22,16 @@ ZSH_THEME_GIT_PROMPT_DIRTY="$my_orange*%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="$FG[075])%{$reset_color%}"
 
 PROMPT='$FG[237]${(l.$(afmagic_dashes)..-.)}%{$reset_color%}
-$(_user_host)$FG[032]%~ $(git_prompt_info)$(hg_prompt_info) $FG[105]
+$(_anon_user)$FG[032]%~ $(git_prompt_info)$(hg_prompt_info) $FG[105]
 %(!.#.»)%{$reset_color%} '
 
 PROMPT2='%{%(!.%F{red}.%F{white})%}◀%{$reset_color%} '
 
 RPROMPT='$(vi_mode_prompt_info)%{$(echotc UP 1)%}$(_git_time_since_commit) $(git_prompt_status) ${_return_status}%{$(echotc DO 1)%}'
+
+function _anon_user() {
+  echo "user@127.0.0.1:"
+}
 
 function _user_host() {
   local me
@@ -35,7 +39,7 @@ function _user_host() {
     me="%n@%m"
   elif [[ $LOGNAME != $USER ]]; then
     me="%n"
-  else 
+  else
     me="%{$fg[bold_blue]%}%n%{$reset_color%}"
   fi
   if [[ -n $me ]]; then

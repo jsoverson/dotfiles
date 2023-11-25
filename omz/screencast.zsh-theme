@@ -22,7 +22,7 @@ ZSH_THEME_GIT_PROMPT_DIRTY="$my_orange*%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="$FG[075])%{$reset_color%}"
 
 PROMPT='$FG[237]${(l.$(afmagic_dashes)..-.)}%{$reset_color%}
-$FG[105]%~%{$reset_color%}$ '
+$FG[105]%~%{$reset_color%}$'
 
 PROMPT2='%{%(!.%F{red}.%F{white})%}◀%{$reset_color%} '
 

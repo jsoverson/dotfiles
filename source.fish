@@ -1,7 +1,7 @@
 set DOTFILES_DIR (status dirname)
 set -U fish_greeting
 
-set SHELL_EXT "fish"
+set SHELL_EXT fish
 
 # helper functions
 source "$DOTFILES_DIR/source/functions.fish"
@@ -27,5 +27,5 @@ source "$DOTFILES_DIR/source/development.fish"
 
 # source local file if it exists
 if test -f "$HOME/local.fish"
-  source "$HOME/local.fish"
+    source "$HOME/local.fish"
 end

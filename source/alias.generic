@@ -10,3 +10,6 @@ alias cplast="fc -ln -1 -1 | pbcopy"
 
 alias reload-local="source ~/local.$SHELL_EXT"
 alias reload-dotfiles="source $DOTFILES_DIR/source.$SHELL_EXT"
+
+alias ...="cd ../.."
+alias ....="cd ../../.."
