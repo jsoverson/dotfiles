@@ -78,4 +78,10 @@ if ! exists "rustup"; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 fi
 
+if ! exists "nvm"; then
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+  nvm install node
+  nvm alias default node
+fi
+
 ./osx-preferences.sh
