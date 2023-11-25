@@ -69,4 +69,9 @@ if ! exists "/Applications/Alfred.app/Contents/MacOS/Alfred"; then
   cp -r /Volumes/Alfred/Alfred\ 5.app /Applications
 fi
 
+if ! exists source_dotfiles; then
+  echo "alias source_dotfiles='source ~/dotfiles/source.zshrc'" >> ~/.zshrc
+  echo "source_dotfiles" >> ~/.zshrc
+fi
+
 ./osx-preferences.sh
