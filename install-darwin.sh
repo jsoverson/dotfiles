@@ -32,9 +32,10 @@ fi
 # /End app store
 
 #1password
-if ! type "/Applications/1Password 7.app/Contents/MacOS/1Password 7" >/dev/null; then
-  curl -L https://app-updates.agilebits.com/download/OPM7 -o /tmp/1password.pkg
-  open /tmp/1password.pkg
+if ! type "/Applications/1Password.app/Contents/MacOS/1Password" >/dev/null; then
+  curl -L https://downloads.1password.com/mac/1Password.zip -o /tmp/1password.zip
+  unzip /tmp/1password.zip -d /tmp/1password
+  open /tmp/1password/1Password\ Installer.app/
 fi
 
 #iterm2
