@@ -80,6 +80,7 @@ fi
 
 if ! exists "nvm"; then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+  source $HOME/.nvm/nvm.sh
   nvm install node
   nvm alias default node
 fi
