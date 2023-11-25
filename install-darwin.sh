@@ -42,6 +42,9 @@ brew_install starship
 # /Begin app store
 app_store_install "/Applications/Slack.app/Contents/MacOS/Slack" 803453959
 app_store_install "/Applications/Keynote.app/Contents/MacOS/Keynote" 409183694
+app_store_install "/Applications/Magnet.app/Contents/MacOS/Magnet" 441258766
+app_store_install "/Applications/Pixelmator Pro.app/Contents/MacOS/Pixelmator Pro" 1289583905
+https://apps.apple.com/us/app/pixelmator-pro/id1289583905?mt=12
 # /End app store
 
 #1password
