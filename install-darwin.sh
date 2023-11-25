@@ -59,7 +59,7 @@ fi
 
 #vscode
 if ! exists "/Applications/Visual Studio Code.app/Contents/MacOS/Electron"; then
-  curl -L "https://go.microsoft.com/fwlink/?LinkID=620882" -o /tmp/vscode.zip
+  curl -L "https://code.visualstudio.com/sha/download?build=stable&os=darwin-arm64" -o /tmp/vscode.zip
   unzip /tmp/vscode.zip -d /Applications
 fi
 
