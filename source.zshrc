@@ -22,6 +22,9 @@ source $DOTFILES_DIR/source/alias.zshrc
 source $DOTFILES_DIR/source/source-$(platform).zshrc
 source $DOTFILES_DIR/source/development.zshrc
 
+export STARSHIP_CONFIG=$DOTFILES_DIR/config/starship.toml
+eval "$(starship init zsh)"
+
 if [[ -f $HOME/local.zshrc ]]; then
   source $HOME/local.zshrc
 fi

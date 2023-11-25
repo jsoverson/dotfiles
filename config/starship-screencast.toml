@@ -1,0 +1,65 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = false
+
+format = """
+$username\
+$hostname\
+$localip\
+$character"""
+
+# Replace the '❯' symbol in the prompt with '➜'
+[character] # The name of the module we are configuring is 'character'
+success_symbol = '[\$](white)' # The 'success_symbol' segment is being set to '➜' with the color 'bold green'
+error_symbol = '[\$](white)'
+
+[line_break]
+disabled = true
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+
+[cmd_duration]
+disabled = true
+
+[rust]
+symbol = ""
+format = "rust [$symbol$version]($style)"
+disabled = true
+
+[localip]
+ssh_only = false
+format = '[@127.0.0.1](fg:8) '
+disabled = false
+
+[username]
+style_user = 'fg:8'
+style_root = 'black'
+format = '[user]($style)'
+disabled = false
+show_always = true
+
+[memory_usage]
+threshold = 75
+symbol = ' '
+style = 'bold dimmed red'
+format = "$symbol[$ram( | $swap)]($style) "
+disabled = true
+
+[directory]
+disabled = true
+
+[battery]
+full_symbol = '🔋 '
+charging_symbol = '⚡️ '
+discharging_symbol = '💀 '
+disabled = true
+
+
+[[battery.display]]
+threshold = 15
+style = 'bold red'
