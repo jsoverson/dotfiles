@@ -7,13 +7,13 @@ function exists {
 }
 
 function brew_install {
-  if ! exists $1; then
-    brew install $1
+  if ! exists "$1"; then
+    brew install "$1"
   fi
 }
 
 function app_store_install {
-  if ! exists $1; then
+  if ! exists "$1"; then
     mas install $2
   fi
 }
