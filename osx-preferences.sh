@@ -81,12 +81,6 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 # Enable lid wakeup
 sudo pmset -a lidwake 1
 
-# Restart automatically on power loss
-sudo pmset -a autorestart 1
-
-# Restart automatically if the computer freezes
-sudo systemsetup -setrestartfreeze on
-
 # Sleep the display after 15 minutes
 sudo pmset -a displaysleep 10
 
@@ -99,9 +93,6 @@ sudo pmset -b sleep 15
 # Set standby delay to 24 hours (default is 1 hour)
 sudo pmset -a standbydelay 86400
 
-# Never go into computer sleep mode
-sudo systemsetup -setcomputersleep Off > /dev/null
-
 # Hibernation mode
 # 0: Disable hibernation (speeds up entering sleep mode)
 # 3: Copy RAM to disk so the system state can still be restored in case of a
@@ -111,10 +102,6 @@ sudo pmset -a hibernatemode 0
 ###############################################################################
 # Screen                                                                      #
 ###############################################################################
-
-# Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Save screenshots to the desktop
 defaults write com.apple.screencapture location -string "$DOCS/screenshots"
@@ -218,42 +205,3 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 
 # Fn-keys on by default
 defaults -currentHost write -globalDomain com.apple.keyboard.fnState -bool true
-
-# Map Caps Lock key to Escape
-defaults -currentHost write com.apple.keyboard.modifiermapping.1452-640-0 -dict HIDKeyboardModifierMappingDst 30064771113 HIDKeyboardModifierMappingSrc 30064771129
-
-# hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
-
-
-###Iterm2 TODO
-# defaults write com.googlecode.iterm2 -> GlobalKeyMap
-# >             "0xf703-0x280000" =             {
-# >                 Action = 10;
-# >                 Text = f;
-# >             };
-            # "0xf702-0x280000" =             {
-            #     Action = 10;
-            #     Text = b;
-            # };
-
-
-###############################################################################
-# Google Chrome & Google Chrome Canary                                        #
-###############################################################################
-
-# Disable the all too sensitive backswipe on trackpads
-defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
-
-# Disable the all too sensitive backswipe on Magic Mouse
-defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
-
-# Use the system-native print preview dialog
-defaults write com.google.Chrome DisablePrintPreview -bool true
-defaults write com.google.Chrome.canary DisablePrintPreview -bool true
-
-# Expand the print dialog by default
-defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
-defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
-
