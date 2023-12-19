@@ -87,4 +87,4 @@ if ! exists "nvm"; then
   nvm alias default node
 fi
 
-./osx-preferences.sh
+$DOTFILES_DIR/osx-preferences.sh
