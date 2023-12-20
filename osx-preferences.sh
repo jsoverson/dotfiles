@@ -124,7 +124,9 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 ###
 
 # Enable three finger drag
-defaults -currentHost write -globalDomain com.apple.trackpad.threeFingerDragGesture -int 1
+defaults write com.apple.appleMultitouchTrackpad TrackpadThreeFingerDrag -int 1
+defaults write com.apple.appleMultitouchTrackpad TrackpadThreeFingerHorizSwipeGesture -int 0
+defaults write com.apple.appleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -int 0
 
 defaults write com.apple.systemuiserver menuExtras -array \
   "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
