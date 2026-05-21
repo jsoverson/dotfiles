@@ -1,4 +1,4 @@
-alias ll="ls -alFh"
+alias ll="ls -al"
 
 alias dev="cd $DEV/src"
 

@@ -12,9 +12,20 @@ success_symbol = '[➜](bold green)' # The 'success_symbol' segment is being set
 [package]
 disabled = true
 
+[docker_context]
+disabled = true
+
+[nodejs]
+format = '[node:$symbol($version )]($style)'
+symbol = ''
+
+[golang]
+format = '[go:$symbol($version )]($style)'
+symbol = ''
+
 [rust]
 symbol = ""
-format = "rust [$symbol$version]($style)"
+format = "[rust:$symbol($version )]($style)"
 
 [localip]
 ssh_only = false
@@ -34,6 +45,9 @@ threshold = 75
 symbol = ' '
 style = 'bold dimmed red'
 format ="$symbol[$ram( | $swap)]($style) "
+
+[git_branch]
+symbol = ''
 
 [battery]
 full_symbol = '🔋 '

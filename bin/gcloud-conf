@@ -1,0 +1,18 @@
+#!/usr/bin/env nu
+
+def main [config : string]: nothing -> nothing {
+    export-env {
+        $env.CLOUDSDK_ACTIVE_CONFIG_NAME = $config
+    }
+    mut config = {
+        CLOUDSDK_ACTIVE_CONFIG_NAME : $config
+    }
+
+    load-env $config
+
+    let token = (gcloud auth print-access-token)
+    $config.GOOGLE_CLOUD_ACCESS_TOKEN = $token
+
+    print ($config | to json)
+}
+
