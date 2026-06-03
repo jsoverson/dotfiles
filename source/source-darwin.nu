@@ -40,3 +40,13 @@ mkdir ($nu.data-dir | path join "vendor/autoload")
 starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 
 use ~/dotfiles/lib/nu/mise.nu
+
+source ../nu_scripts/custom-completions/git/git-completions.nu
+source ../nu_scripts/custom-completions/cargo/cargo-completions.nu
+source ../nu_scripts/custom-completions/docker/docker-completions.nu
+source ../nu_scripts/custom-completions/just/just-completions.nu
+
+$env.COLORTERM = "truecolor"
+$env.config.completions.algorithm = "substring"
+$env.config.completions.quick = true
+$env.config.completions.partial = true
