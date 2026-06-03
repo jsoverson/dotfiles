@@ -1,21 +1,16 @@
 #!/usr/bin/env nu
 
 def main [] {
-  let diff = (git diff --staged | claude -p "create a concise commit message from this diff. Use lowercase. Use conventional commits. Use no more than three bullet points. Only include comments for genuinely important logic changes. Output the final message suitable for passing to `git commit -m 'MESSAGE'`.")
+  let diff = (git diff --staged | claude --model haiku -p "create a concise commit message from this diff. Use lowercase. Use conventional commits. Use no more than three bullet points. Only include comments for genuinely important logic changes. Output the final message suitable for passing to `git commit -m 'MESSAGE'`.")
   # strip leading and trailing whitespace from the message and fence blocks if they exist
   let diff = ($diff | str trim  | str replace -amr '(:?^```|```$)' '' | str trim)
 
   print ([{"Generated commit message": $diff}] | table -i false)
 
-  # check with the user if the message looks good
-  print "Does this commit message look good? (y/n)"
-  let answer = (input)
-  if $answer == "y" {
-    # if yes, then commit with that message
     git commit -m $diff
-  } else {
-    print "Commit message not approved. Aborting commit."
-    exit 1
-  }
+
+    # print instructions on how to undo the commit if the message is not good
+    print ""
+    print "⚠️ If you want to undo this commit, run `git reset --soft HEAD~1`"
 }
 
