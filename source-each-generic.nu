@@ -1,0 +1,10 @@
+source source/10-env.nu
+source source/20-alias.nu
+source source/30-nvm.nu
+source source/31-mise.nu
+source source/32-starship.nu
+source source/40-paths.nu
+source source/41-completions.nu
+source source/42-term.nu
+source source/43-history.nu
+source source/44-banner.nu

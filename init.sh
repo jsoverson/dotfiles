@@ -8,7 +8,8 @@ PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
 
 $DOTFILES_DIR/init/directories
 
+echo "Installing $PLATFORM dependencies"
 $DOTFILES_DIR/install-$PLATFORM.sh
 
-$DOTFILES_DIR/init/theme
 $DOTFILES_DIR/init/git
+

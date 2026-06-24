@@ -46,3 +46,6 @@ def --env nvm-fast [...args: string] {
 def --env nvm [...args: string] {
     nvm-fast ...$args
 }
+
+# Set default node version on startup
+nvm use default

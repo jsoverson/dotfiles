@@ -1,9 +1,0 @@
-#!/bin/bash
-
-if [ ! -L ~/.oh-my-zsh/themes/jsoverson.zsh-theme ]; then
-  ln -s $DOTFILES_DIR/omz/jsoverson.zsh-theme ~/.oh-my-zsh/themes/jsoverson.zsh-theme
-fi
-
-if [ ! -L ~/.oh-my-zsh/themes/screencast.zsh-theme ]; then
-  ln -s $DOTFILES_DIR/omz/screencast.zsh-theme ~/.oh-my-zsh/themes/screencast.zsh-theme
-fi
