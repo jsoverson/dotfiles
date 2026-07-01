@@ -1,0 +1,8 @@
+#!/usr/bin/env nu
+
+def main [dir: string] {
+  mkdir $dir
+  cd $dir
+  git init
+}
+

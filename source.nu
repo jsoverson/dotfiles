@@ -9,8 +9,10 @@ $env.PATH ++= [
     ($env.HOME)/development/bin
 ]
 
-^$nu.current-exe ./gen-source.nu source | save -f source-each-generic.nu
-^$nu.current-exe ./gen-source.nu source/($nu.os-info.name) | save -f  source-each-platform.nu
+let curr_dir = $env.CURRENT_FILE | path dirname
+
+^$nu.current-exe ($curr_dir)/gen-source.nu source | save -f source-each-generic.nu
+^$nu.current-exe ($curr_dir)/gen-source.nu source/($nu.os-info.name) | save -f  source-each-platform.nu
 source ./source-each.nu
 
 # source local file if it exists
