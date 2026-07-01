@@ -7,10 +7,10 @@ def main [] {
 
   print ([{"Generated commit message": $diff}] | table -i false)
 
-    git commit -m $diff
+  git commit -m $diff
 
-    # print instructions on how to undo the commit if the message is not good
-    print ""
-    print "⚠️ If you want to undo this commit, run `git reset --soft HEAD~1`"
+  # print instructions on how to undo the commit if the message is not good
+  print ""
+  print "⚠️ If you want to undo this commit, run `git reset --soft HEAD~1`"
 }
 
