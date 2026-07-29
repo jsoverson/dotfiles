@@ -11,8 +11,8 @@ $env.PATH ++= [
 
 let curr_dir = $env.CURRENT_FILE | path dirname
 
-^$nu.current-exe ($curr_dir)/gen-source.nu source | save -f source-each-generic.nu
-^$nu.current-exe ($curr_dir)/gen-source.nu source/($nu.os-info.name) | save -f  source-each-platform.nu
+^$nu.current-exe ($curr_dir)/gen-source.nu ($curr_dir)/source | save -f ($curr_dir)/source-each-generic.nu
+^$nu.current-exe ($curr_dir)/gen-source.nu ($curr_dir)/source/($nu.os-info.name) | save -f  ($curr_dir)/source-each-platform.nu
 source ./source-each.nu
 
 # source local file if it exists
