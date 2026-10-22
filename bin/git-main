@@ -1,0 +1,7 @@
+#!/usr/bin/env nu
+
+def main [] {
+  git co main
+  git pull
+}
+

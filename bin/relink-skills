@@ -1,0 +1,36 @@
+#!/usr/bin/env nu
+
+# Link every skill in ~/.agents/skills/* into ~/.claude/skills/
+def main [ root: string ] {
+  let $root = if $root == "" {
+    $env.HOME
+  } else {
+    $root
+  }
+
+  let src_dir = ($root | path join ".agents" "skills")
+  let dst_dir = ($root | path join ".claude" "skills")
+
+  mkdir $dst_dir
+
+  ls $src_dir
+  | where type == dir
+  | each {|skill|
+      let name = ($skill.name | path basename)
+      let dst = ($dst_dir | path join $name)
+      let rel = (["../.." ".agents" "skills" $name] | path join)
+
+      match ($dst | path type) {
+        "symlink" => { rm $dst }
+        null => { }
+        $other => {
+          print $"skip ($name): target exists as ($other)"
+          return
+        }
+      }
+
+      ^ln -s $rel $dst
+      print $"linked ($name)"
+    }
+  | ignore
+}

@@ -1,7 +1,11 @@
-git reset
-git checkout .
-git clean -fdx
-git submodule foreach --recursive git reset --hard
-git submodule foreach --recursive git clean -fdx
+#!/usr/bin/env nu
 
-git status -sb
+def main [] {
+  git reset
+  git checkout .
+  git clean -fdx
+  git submodule foreach --recursive git reset --hard
+  git submodule foreach --recursive git clean -fdx
+  git status -sb
+}
+
