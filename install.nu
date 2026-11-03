@@ -63,6 +63,20 @@ def runtimes [] {
   if (^rustup default | complete).exit_code != 0 { ^rustup default stable }
 }
 
+# Agent skills via the `skills` CLI (vercel-labs/skills), from config/skills.nuon.
+# Installs only skills missing from ~/.agents/skills, so re-runs don't overwrite local edits.
+def install-skills [home: string] {
+  let dir = $home | path join .agents skills
+  let have = if ($dir | path exists) { ls $dir | get name | path basename } else { [] }
+  open ($repo | path join config skills.nuon) | each {|s|
+    let missing = $s.skills | where $it not-in $have
+    if ($missing | is-not-empty) {
+      let flags = $missing | each {|n| [--skill $n] } | flatten
+      ^mise exec -- npx -y skills add $s.source ...$flags --global --agent claude-code --yes
+    }
+  } | ignore
+}
+
 def ensure-gh-key [pub: string, kind: string, endpoint: string] {
   let body = open $pub | split row " " | first 2 | str join " "
   let have = ^gh api $endpoint --paginate --jq '.[].key' | lines
@@ -125,6 +139,7 @@ def main [
 
   generate-vendor-autoload
   runtimes
+  install-skills $home
   if $defaults and $nu.os-info.name == "macos" { defaults }
   print $"done \(profile: ($profile)\)"
 }
