@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -e
-
-if [[ ! -x wasm2wat ]]; then
-  curl -L https://zulu.molovo.co/install | zsh && zsh
-else
-  echo "Found wasm2wat in path, not reinstalling wabt"
-fi
