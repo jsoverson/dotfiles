@@ -1,0 +1,5 @@
+# Managed by ~/dotfiles. Interactive shells are nushell; this keeps zsh usable for tools and ssh.
+command -v mise >/dev/null && eval "$(mise activate zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
+autoload -Uz compinit && compinit
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

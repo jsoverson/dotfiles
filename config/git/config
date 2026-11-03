@@ -1,0 +1,47 @@
+# Managed by ~/dotfiles (linked to ~/.config/git/config).
+# Machine-specific settings (signing key) go in ~/.gitconfig, which git reads after this file.
+[user]
+	name = Jarrod Overson
+	email = jsoverson@gmail.com
+[alias]
+	st = status
+	co = checkout
+[core]
+	editor = code --wait
+	pager = delta
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[gpg]
+	format = ssh
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+[merge]
+	tool = vscode
+	conflictStyle = zdiff3
+[mergetool "vscode"]
+	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[diff]
+	tool = vscode
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	dark = true
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+# Private overlay; git ignores a missing include.
+[include]
+	path = ~/.dotfiles-work/gitconfig

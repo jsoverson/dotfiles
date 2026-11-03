@@ -1,0 +1,11 @@
+# Managed by ~/dotfiles.
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  # rustup is keg-only in Homebrew; its bin holds the cargo/rustc proxies.
+  path=(/opt/homebrew/opt/rustup/bin $path)
+fi
+
+# config/paths is shared with nushell; first line ends up first in PATH.
+typeset -U path
+path=(${${(f)"$(<$HOME/dotfiles/config/paths)"}/#\~/$HOME} $path)
+export PATH

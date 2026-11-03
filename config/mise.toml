@@ -1,0 +1,6 @@
+[tools]
+node = "lts"
+python = "latest"
+go = "latest"
+bun = "latest"
+"aqua:nats-io/natscli" = "latest"
