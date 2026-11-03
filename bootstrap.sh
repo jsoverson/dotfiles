@@ -16,7 +16,8 @@ case "$(uname -s)" in
 esac
 
 # Ask for sudo once; keep the timestamp fresh until this process (and the exec'd nu) exits.
-sudo -v
+# `sudo -v` prompts even with a NOPASSWD rule when other rules (e.g. %admin) require a password.
+sudo -n true 2>/dev/null || sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 if [ ! -x /opt/homebrew/bin/brew ]; then
