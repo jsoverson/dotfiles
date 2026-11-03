@@ -1,28 +1,24 @@
 # Base CLI packages for every macOS machine. GUI apps live in Brewfile.apps.
-brew "ast-grep"
-brew "bat"
-brew "btop"
+brew "bat" # alias cat to bat
+brew "btop" # alias top to btop
+brew "eza" # alias ls to eza
+
 brew "carapace"
 brew "coreutils"
 brew "curl"
 brew "direnv"
-brew "eza"
 brew "gh"
 brew "git"
 brew "git-delta"
 brew "git-lfs"
 brew "glow"
-brew "jj"
 brew "jq"
 brew "just"
 brew "mise"
-brew "neovim"
 brew "nushell"
 brew "ripgrep"
 brew "rustup"
-brew "scc"
 brew "sevenzip"
 brew "starship"
-brew "tldr"
 brew "topiary"
 brew "wget"
