@@ -59,14 +59,15 @@ def generate-vendor-autoload [] {
 
 def runtimes [] {
   ^mise install --yes
-  # `rustup default` fails when no default toolchain is set; leave an existing choice alone.
-  if (^rustup default | complete).exit_code != 0 { ^rustup default stable }
+  # rustup 1.29 reports `stable (default)` before anything is installed, so check the toolchains dir.
+  let toolchains = $env.HOME | path join .rustup toolchains
+  if (not ($toolchains | path exists)) or (ls $toolchains | is-empty) { ^rustup default stable }
 }
 
 # Agent skills via the `skills` CLI (vercel-labs/skills), from config/skills.nuon.
-# Installs only skills missing from ~/.agents/skills, so re-runs don't overwrite local edits.
+# Installs only skills missing from ~/.claude/skills, so re-runs don't overwrite local edits.
 def install-skills [home: string] {
-  let dir = $home | path join .agents skills
+  let dir = $home | path join .claude skills
   let have = if ($dir | path exists) { ls $dir | get name | path basename } else { [] }
   open ($repo | path join config skills.nuon) | each {|s|
     let missing = $s.skills | where $it not-in $have

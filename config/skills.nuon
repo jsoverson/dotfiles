@@ -19,7 +19,6 @@
       claude-handoff,
       code-review,
       codebase-design,
-      diagnose,
       diagnosing-bugs,
       domain-modeling,
       grill-me,
@@ -33,13 +32,10 @@
       pr,
       prototype,
       research,
-      resolving-merge-conflicts,
       retro,
       setup-matt-pocock-skills,
       tdd,
       teach,
-      to-issues,
-      to-prd,
       to-questionnaire,
       to-spec,
       to-tickets,
@@ -47,8 +43,6 @@
       wait-what,
       wayfinder,
       wizard,
-      write-a-skill,
       writing-for-agents,
-      zoom-out
     ]]
 ]
