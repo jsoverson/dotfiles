@@ -1,0 +1,8 @@
+# GUI apps for every macOS machine. Skipped with --headless.
+brew "mas"
+cask "ghostty"
+cask "visual-studio-code"
+
+# App Store apps need an App Store sign-in first; failures here only warn.
+# mas "Keynote", id: 409183694
+# mas "Pixelmator Pro", id: 1289583905
