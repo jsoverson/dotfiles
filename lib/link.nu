@@ -4,7 +4,7 @@
 export def action [src: string, dest: string]: nothing -> string {
   match ($dest | path type) {
     null => "create"
-    "symlink" => (if (ls -l $dest | get 0.target) == $src { "ok" } else { "replace" })
+    "symlink" => (if (ls -lD $dest | get 0.target) == $src { "ok" } else { "replace" })
     _ => "replace"
   }
 }

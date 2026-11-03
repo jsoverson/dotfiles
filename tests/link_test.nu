@@ -11,18 +11,22 @@ def main [] {
   "b" | save ($repo | path join b)
   "old" | save ($home | path join existing)
   ^ln -s ($repo | path join a) ($home | path join linked)
+  mkdir ($repo | path join d)
+  "x" | save ($repo | path join d x)
+  ^ln -s ($repo | path join d) ($home | path join dirlinked)
 
   let links = [
     {src: ($repo | path join a), dest: ($home | path join linked)}
+    {src: ($repo | path join d), dest: ($home | path join dirlinked)}
     {src: ($repo | path join a), dest: ($home | path join nested/new)}
     {src: ($repo | path join b), dest: ($home | path join existing)}
   ]
   let p = link plan $links
-  assert equal ($p | get action) [ok create replace]
+  assert equal ($p | get action) [ok ok create replace]
 
   let backup = $root | path join backup
   link apply $p $backup $home | ignore
-  assert equal (link plan $links | get action) [ok ok ok]
+  assert equal (link plan $links | get action) [ok ok ok ok]
   assert equal (open ($backup | path join existing)) "old"
   assert equal (open ($home | path join existing)) "b"
 
