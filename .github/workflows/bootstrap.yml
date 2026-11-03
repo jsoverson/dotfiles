@@ -1,0 +1,26 @@
+name: bootstrap
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    env:
+      # mise and brew hit the GitHub API; the token avoids anonymous rate limits.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: link checkout to ~/dotfiles
+        run: ln -s "$GITHUB_WORKSPACE" "$HOME/dotfiles"
+      - name: bootstrap (base profile, headless)
+        run: sh "$HOME/dotfiles/bootstrap.sh" --headless
+      - name: re-run is clean
+        run: nu "$HOME/dotfiles/install.nu" --headless
+      - name: tests
+        run: |
+          nu "$HOME/dotfiles/tests/link_test.nu"
+          nu "$HOME/dotfiles/tests/nu_config_test.nu"

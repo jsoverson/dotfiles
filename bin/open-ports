@@ -1,3 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env nu
 
-sudo lsof +c 50 -nP -iTCP -sTCP:LISTEN
+# List processes listening on TCP ports.
+def main [] {
+  ^sudo lsof +c 50 -nP -iTCP -sTCP:LISTEN
+}
