@@ -8,7 +8,7 @@ Personal dotfiles: machine bootstrap plus shell environment. See README.md for l
 - zsh stays the login shell (nushell is not POSIX). Interactive terminals launch nushell directly, so nushell config sets its own env (Homebrew, PATH) instead of inheriting it.
 - PATH entries shared by both shells go in `config/paths`.
 - `install.nu` is re-run as the update command, so every step has to be idempotent.
-- The repo is public. Work-specific config (packages, identity, org names) goes in the private overlay `jsoverson/dotfiles-overlay-2026`, cloned to `~/.dotfiles-work`.
+- Work-specific config (packages, identity, org names) goes in the overlay repo `jsoverson/dotfiles-overlay-2026`, cloned to `~/.dotfiles-work` for the work profile. Both repos are public; never commit secrets to either.
 - macOS is implemented. `os/linux` and `os/windows` are stubs.
 
 ## Nushell config

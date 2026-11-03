@@ -42,6 +42,6 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
-# Private overlay; git ignores a missing include.
+# Work overlay; git ignores a missing include.
 [include]
 	path = ~/.dotfiles-work/gitconfig
