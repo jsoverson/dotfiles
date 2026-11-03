@@ -1,0 +1,217 @@
+#!/usr/bin/env nu
+
+# Lists all platforms, layers, annotations, and configs from an OCI Image Index or Manifest
+def main [
+    image: string                          # Image reference (e.g. ghcr.io/astral-sh/uv:latest)
+    --flat (-f)                            # Output a flattened table with one row per layer
+    --no-inspect                           # Skip downloading/inspecting JSON and text layer contents
+    --max-inspect-size: int = 131072       # Max layer size in bytes to decode inline (default 128KB)
+    --plain-http                           # Allow plain HTTP connections to the registry
+    --registry-config: path                # Path to docker/registry credentials config
+] {
+    let repo = (parse-repo $image)
+
+    let flags = [
+        ...(if $plain_http { ["--plain-http"] } else { [] })
+        ...(if ($registry_config != null) { ["--registry-config" $registry_config] } else { [] })
+    ]
+
+    # Fetch top-level descriptor
+    let manifest_raw = (^oras manifest fetch ...$flags $image | from json)
+
+    # Branch between Multi-Architecture Index and Single Manifest
+    let result = if ("manifests" in $manifest_raw) {
+        let results = ($manifest_raw.manifests | each { |m|
+            let os = ($m.platform?.os? | default "unknown")
+            let arch = ($m.platform?.architecture? | default "unknown")
+            let variant = ($m.platform?.variant? | default "")
+            let platform = if ($variant | is-empty) {
+                $"($os)/($arch)"
+            } else {
+                $"($os)/($arch)/($variant)"
+            }
+
+            let child_ref = $"($repo)@($m.digest)"
+            let child = (^oras manifest fetch ...$flags $child_ref | from json)
+
+            parse-manifest-entry $repo $child $platform $m.digest $flags $no_inspect $max_inspect_size
+        })
+
+        if $flat {
+            flatten-results $results
+        } else {
+            $results
+        }
+    } else if ("layers" in $manifest_raw) {
+        let digest = ($image | split row '@' | last)
+        let results = [(parse-manifest-entry $repo $manifest_raw "single-arch" $digest $flags $no_inspect $max_inspect_size)]
+
+        if $flat {
+            flatten-results $results
+        } else {
+            $results
+        }
+    } else {
+        error make { msg: $"Unrecognized OCI descriptor format at ($image)" }
+    }
+    $result | to json
+}
+
+# Processes a single manifest, extracting config, history, annotations, and layer data
+def parse-manifest-entry [
+    repo: string
+    manifest: any
+    platform: string
+    digest: string
+    flags: list<string>
+    no_inspect: bool
+    max_inspect_size: int
+] {
+    let artifact_type = ($manifest.artifactType? | default null)
+    let manifest_annotations = ($manifest.annotations? | default {})
+    let config_desc = ($manifest.config? | default null)
+
+    # 1. Fetch Manifest Config Blob (if not empty descriptor)
+    let config_data = (fetch-manifest-config $repo $config_desc $flags)
+
+    # 2. Extract Docker/OCI history steps (for standard container images)
+    let container_history = (
+        if ($config_data != null and ($config_data | describe) =~ "record" and "history" in $config_data) {
+            $config_data.history | where { |h| not ($h.empty_layer? | default false) }
+        } else {
+            []
+        }
+    )
+
+    # 3. Process each layer
+    let layers = ($manifest.layers? | default [] | enumerate | each { |l|
+        let layer = $l.item
+        let annotations = ($layer.annotations? | default {})
+        let title = (try { $annotations | get "org.opencontainers.image.title" } catch { null })
+        let media_type = ($layer.mediaType? | default "")
+        let size = ($layer.size? | default 0)
+        let l_digest = ($layer.digest? | default "")
+
+        # Associate Dockerfile build command if standard container image
+        let created_by = (
+            if ($l.index < ($container_history | length)) {
+                try { $container_history | get $l.index | get created_by } catch { null }
+            } else {
+                null
+            }
+        )
+
+        # Inspect layer blob if it's JSON or plaintext under the size threshold
+        let content = (
+            if (not $no_inspect) {
+                fetch-layer-content $repo $layer $flags $max_inspect_size
+            } else {
+                null
+            }
+        )
+
+        {
+            index: $l.index
+            title: $title
+            media_type: $media_type
+            size: ($size | into filesize)
+            size_bytes: $size
+            digest: $l_digest
+            created_by: $created_by
+            annotations: $annotations
+            content: $content
+        }
+    })
+
+    {
+        platform: $platform
+        artifact_type: $artifact_type
+        manifest_digest: $digest
+        manifest_annotations: $manifest_annotations
+        config_descriptor: $config_desc
+        config: $config_data
+        layers: $layers
+    }
+}
+
+# Fetches and decodes the manifest's configuration blob
+def fetch-manifest-config [repo: string, config_desc: any, flags: list<string>] {
+    if ($config_desc == null) { return null }
+    let digest = ($config_desc.digest? | default "")
+    let media_type = ($config_desc.mediaType? | default "")
+    let size = ($config_desc.size? | default 0)
+
+    # Skip empty OCI descriptors
+    if ($media_type == "application/vnd.oci.empty.v1+json" or $size <= 2 or ($digest | is-empty)) {
+        return null
+    }
+
+    let res = (^oras blob fetch ...$flags --output - $"($repo)@($digest)" | complete)
+    if $res.exit_code == 0 {
+        try {
+            $res.stdout | from json
+        } catch {
+            $res.stdout
+        }
+    } else {
+        null
+    }
+}
+
+# Inspects small JSON or text blobs directly from registry storage
+def fetch-layer-content [repo: string, layer: any, flags: list<string>, max_size: int] {
+    let media_type = ($layer.mediaType? | default "")
+    let size = ($layer.size? | default 0)
+    let digest = ($layer.digest? | default "")
+
+    # let is_inspectable = ($media_type =~ '(?i)json|text|yaml|toml|xml')
+    let is_inspectable = false
+    if ($is_inspectable and $size <= $max_size and ($digest | is-not-empty)) {
+        let res = (^oras blob fetch ...$flags --output - $"($repo)@($digest)" | complete)
+        if $res.exit_code == 0 {
+            try {
+                $res.stdout | from json
+            } catch {
+                $res.stdout
+            }
+        } else {
+            null
+        }
+    } else {
+        null
+    }
+}
+
+# Strips tags, digests, and registry ports to yield the canonical repo path
+def parse-repo [image: string] {
+    let no_digest = ($image | split row '@' | first)
+    if ($no_digest | str contains '/') {
+        let parts = ($no_digest | split row '/')
+        let last_part = ($parts | last | split row ':' | first)
+        let prefix = ($parts | drop 1 | str join '/')
+        $"($prefix)/($last_part)"
+    } else {
+        $no_digest | split row ':' | first
+    }
+}
+
+# Expands nested layer arrays for flattened views
+def flatten-results [results: list] {
+    $results | each { |entry|
+        $entry.layers | each { |layer|
+            {
+                platform: $entry.platform
+                artifact_type: $entry.artifact_type
+                manifest_digest: $entry.manifest_digest
+                layer_index: $layer.index
+                title: $layer.title
+                size: $layer.size
+                media_type: $layer.media_type
+                created_by: $layer.created_by
+                layer_digest: $layer.digest
+                annotations: $layer.annotations
+                content: $layer.content
+            }
+        }
+    } | flatten
+}
