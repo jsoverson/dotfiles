@@ -1,19 +1,13 @@
 [
   [source,skills];
   [backnotprop/pstack,[
-      automate-me,
-      interrogate,
-      no-comments,
-      technical-writing,
-      unslop
+      no-comments
     ]],
   [jsoverson/skills,[
       cm,
       code-comments,
-      setup-pocock-beads,
       thermo-nuclear-code-quality-review,
       what-do-you-want-from-me,
-      write-gooder
     ]],
   [mattpocock/skills,[
       claude-handoff,
