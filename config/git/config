@@ -1,8 +1,7 @@
 # Managed by ~/dotfiles (linked to ~/.config/git/config).
-# Machine-specific settings (signing key) go in ~/.gitconfig, which git reads after this file.
+# Machine-specific settings (email, signing key) go in ~/.gitconfig, which git reads after this file.
 [user]
 	name = Jarrod Overson
-	email = jsoverson@gmail.com
 [alias]
 	st = status
 	co = checkout

@@ -24,7 +24,7 @@ The profile (`base`, `work`, `personal`) is saved in `~/.config/dotfiles/profile
 
 1. Installs packages: `os/macos/Brewfile`, `Brewfile.apps` (GUI, skipped with `--headless`), `Brewfile.personal` for the personal profile.
 2. Symlinks config into place. Anything it replaces moves to `~/.dotfiles-backup/<timestamp>/`.
-3. Unless `--headless`: creates `~/.ssh/id_ed25519` if missing, logs into GitHub with `gh`, registers the key for auth and commit signing, and writes the signing settings to `~/.gitconfig`. The work profile clones the overlay ([jsoverson/dotfiles-overlay-2026](https://github.com/jsoverson/dotfiles-overlay-2026)) to `~/.dotfiles-work`.
+3. Unless `--headless`: creates `~/.ssh/id_ed25519` if missing, logs into GitHub with `gh`, registers the key for auth and commit signing, and writes the signing settings and this machine's git email (prompted once) to `~/.gitconfig`. The work profile clones the overlay ([jsoverson/dotfiles-overlay-2026](https://github.com/jsoverson/dotfiles-overlay-2026)) to `~/.dotfiles-work`.
 4. Applies the overlay, if present: its `Brewfile`, its `links.nuon` (`[{src, dest}]`, src relative to the overlay, dest relative to `$HOME`), and its `gitconfig` (included by `config/git/config`).
 5. Generates starship and mise init scripts into nushell's vendor autoload dir, runs `mise install`, and sets a default rust toolchain if none exists.
 6. Installs agent skills listed in `config/skills.nuon` with the [`skills`](https://github.com/vercel-labs/skills) CLI, globally for Claude Code. Skills already in `~/.claude/skills` are left alone.

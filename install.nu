@@ -103,6 +103,9 @@ def identity [home: string, profile: string] {
   let local = $home | path join .gitconfig
   ^git config --file $local user.signingkey $"($key).pub"
   ^git config --file $local commit.gpgsign true
+  if (^git config --file $local user.email | complete).exit_code != 0 {
+    ^git config --file $local user.email (input "git email for this machine: ")
+  }
 
   let overlay = $home | path join .dotfiles-work
   if $profile == "work" and not ($overlay | path exists) {
