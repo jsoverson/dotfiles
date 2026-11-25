@@ -112,8 +112,6 @@ const spotlight_rules = [
   com.apple.Dictionary Custom.relatedContents Domain.IMAGES Domain.MUSIC
 ]
 
-const alfred_app = "/Applications/Alfred 5.app"
-
 # Domains are parameters so tests can write to temp plists.
 export def spotlight [domain = "com.apple.Spotlight", hotkeys = "com.apple.symbolichotkeys"] {
   let items = $spotlight_items | each {|i|
@@ -126,28 +124,43 @@ export def spotlight [domain = "com.apple.Spotlight", hotkeys = "com.apple.symbo
   ^defaults write $hotkeys AppleSymbolicHotKeys -dict-add 64 "<dict><key>enabled</key><false/><key>value</key><dict><key>parameters</key><array><integer>32</integer><integer>49</integer><integer>1048576</integer></array><key>type</key><string>standard</string></dict></dict>"
 }
 
-# Alfred on cmd+space, launched at login. Its hotkey lives under a per-machine hash that
-# Alfred writes to prefs.json on first launch, so launch it once before writing the hotkey.
-def alfred [] {
-  if not ($alfred_app | path exists) { return }
+const hotkey_plist = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\"><dict><key>default</key><dict><key>key</key><integer>49</integer><key>mod</key><integer>1048576</integer><key>string</key><string> </string></dict></dict></plist>
+"
+
+# Alfred on cmd+space, started at login by a LaunchAgent (System Events login items need an
+# Automation prompt, which fails over SSH). Its hotkey lives under a per-machine hash that Alfred
+# writes to prefs.json on first launch, so launch it once before writing the hotkey.
+export def alfred [] {
+  let app = glob /Applications/Alfred*.app | sort | last
+  if $app == null { print "alfred: not installed, skipping"; return }
   let prefs_json = $env.HOME | path join "Library/Application Support/Alfred/prefs.json"
   if not ($prefs_json | path exists) {
-    ^open -a $alfred_app
+    ^open -a $app
     for _ in 1..30 { if ($prefs_json | path exists) { break }; sleep 1sec }
   }
-  ^osascript -e 'quit app "Alfred 5"'
+  try { ^pkill -x Alfred }
+  for _ in 1..10 { if (^pgrep -x Alfred | complete).exit_code != 0 { break }; sleep 500ms }
   let p = open $prefs_json
   let hotkey = $p.current | path join preferences local $p.localhash hotkey prefs.plist
   mkdir ($hotkey | path dirname)
-  '<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict><key>default</key><dict><key>key</key><integer>49</integer><key>mod</key><integer>1048576</integer><key>string</key><string> </string></dict></dict></plist>
-' | save -f $hotkey
-  let login_items = ^osascript -e 'tell application "System Events" to get the name of every login item'
-  if not ($login_items | str contains "Alfred 5") {
-    ^osascript -e $'tell application "System Events" to make login item at end with properties {path:"($alfred_app)", hidden:false}'
-  }
-  ^open -a $alfred_app
+  $hotkey_plist | save -f $hotkey
+  let agent = $env.HOME | path join Library/LaunchAgents com.dotfiles.alfred.plist
+  mkdir ($agent | path dirname)
+  launch-agent $app | save -f $agent
+  ^open -a $app
+}
+
+export def launch-agent [app: string]: nothing -> string {
+  $"<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\"><dict>
+<key>Label</key><string>com.dotfiles.alfred</string>
+<key>ProgramArguments</key><array><string>/usr/bin/open</string><string>-a</string><string>($app)</string></array>
+<key>RunAtLoad</key><true/>
+</dict></plist>
+"
 }
 
 # Power: [flag setting value]

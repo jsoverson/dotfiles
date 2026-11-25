@@ -32,6 +32,10 @@ def main [] {
   defaults caps-to-escape $caps
   let mapping = ^plutil -convert json -o - $"($caps).plist" | from json | get "com.apple.keyboard.modifiermapping.0-0-0"
   assert equal $mapping [{HIDKeyboardModifierMappingDst: 30064771113, HIDKeyboardModifierMappingSrc: 30064771129}]
+  let agent = $root | path join agent.plist
+  defaults launch-agent "/Applications/Alfred 6.app" | save $agent
+  ^plutil -lint -s $agent
+  assert equal (^plutil -extract ProgramArguments.2 raw -o - $agent | str trim) "/Applications/Alfred 6.app"
 
   rm -r $root
   print "defaults_test ok"
