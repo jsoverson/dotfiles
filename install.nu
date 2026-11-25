@@ -65,15 +65,17 @@ def runtimes [] {
 }
 
 # Agent skills via the `skills` CLI (vercel-labs/skills), from config/skills.nuon.
-# Installs only skills missing from ~/.claude/skills, so re-runs don't overwrite local edits.
+# ~/.agents/skills holds the files; ~/.claude/skills links to them. Installs only skills missing
+# from ~/.agents/skills, so re-runs don't overwrite local edits.
 def install-skills [home: string] {
-  let dir = $home | path join .claude skills
+  let dir = $home | path join .agents skills
   let have = if ($dir | path exists) { ls $dir | get name | path basename } else { [] }
   open ($repo | path join config skills.nuon) | each {|s|
     let missing = $s.skills | where $it not-in $have
     if ($missing | is-not-empty) {
       let flags = $missing | each {|n| [--skill $n] } | flatten
-      ^mise exec -- npx -y skills add $s.source ...$flags --global --agent claude-code --yes
+      # With one target dir the CLI copies; adding `universal` (~/.agents/skills) makes it symlink.
+      ^mise exec -- npx -y skills add $s.source ...$flags --global --agent claude-code universal --yes
     }
   } | ignore
 }
