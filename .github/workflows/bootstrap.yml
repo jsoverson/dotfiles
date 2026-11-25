@@ -24,4 +24,4 @@ jobs:
         run: |
           nu "$HOME/dotfiles/tests/link_test.nu"
           nu "$HOME/dotfiles/tests/nu_config_test.nu"
-          nu "$HOME/dotfiles/tests/spotlight_test.nu"
+          nu "$HOME/dotfiles/tests/defaults_test.nu"

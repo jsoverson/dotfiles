@@ -49,7 +49,32 @@ const prefs = [
   # Widgets: hide on the desktop and in Stage Manager
   [com.apple.WindowManager StandardHideWidgets -bool true]
   [com.apple.WindowManager StageManagerHideWidgets -bool true]
+  # Input menu in the menu bar, for switching keyboard layouts
+  [com.apple.TextInputMenu visible -bool true]
 ]
+
+# Keyboard layouts: Colemak selected, U.S. available from the input menu.
+const layouts = [
+  [name id];
+  [Colemak 12825]
+  ["U.S." 0]
+]
+
+def layout-xml [l: record]: nothing -> string {
+  $"<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>($l.id)</integer><key>KeyboardLayout Name</key><string>($l.name)</string></dict>"
+}
+
+# Domain is a parameter so tests can write to a temp plist. Applies at next login.
+export def keyboard [domain = "com.apple.HIToolbox"] {
+  # macOS's own entries: character viewer and press-and-hold accents.
+  let methods = [com.apple.CharacterPaletteIM com.apple.PressAndHold] | each {|b|
+    $"<dict><key>Bundle ID</key><string>($b)</string><key>InputSourceKind</key><string>Non Keyboard Input Method</string></dict>"
+  }
+  let all = $layouts | each {|l| layout-xml $l }
+  ^defaults write $domain AppleEnabledInputSources -array ...$all ...$methods
+  ^defaults write $domain AppleSelectedInputSources -array ($methods | last) (layout-xml ($layouts | first))
+  ^defaults write $domain AppleCurrentKeyboardLayoutInputSourceID -string com.apple.keylayout.Colemak
+}
 
 # Spotlight categories, copied from the primary Mac's com.apple.Spotlight.
 const spotlight_items = [
@@ -129,8 +154,9 @@ export def main [] {
   ^defaults -currentHost write -globalDomain com.apple.keyboard.fnState -bool true
   ^chflags nohidden ($env.HOME | path join Library)
   for p in $pmset { ^sudo pmset ...$p }
+  keyboard
   spotlight
   ^/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
   alfred
-  for app in [Dock Finder SystemUIServer Spotlight] { try { ^killall $app } }
+  for app in [Dock Finder SystemUIServer Spotlight TextInputMenuAgent] { try { ^killall $app } }
 }
