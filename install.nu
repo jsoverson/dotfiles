@@ -118,7 +118,7 @@ def identity [home: string, profile: string] {
 def main [
   --profile: string  # base, work or personal; remembered after first use
   --headless         # skip GUI apps, SSH key and GitHub auth (CI)
-  --defaults         # apply macOS system preferences
+  --no-defaults      # skip macOS system preferences
 ] {
   let home = $env.HOME
   let state = state-file
@@ -146,6 +146,6 @@ def main [
   generate-vendor-autoload
   runtimes
   install-skills $home
-  if $defaults and $nu.os-info.name == "macos" { defaults }
+  if (not $no_defaults) and $nu.os-info.name == "macos" { defaults }
   print $"done \(profile: ($profile)\)"
 }

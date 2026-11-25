@@ -13,9 +13,9 @@ curl -fsSL https://raw.githubusercontent.com/jsoverson/dotfiles/main/bootstrap.s
 ## Existing machine
 
 ```nu
-dot                 # re-apply: packages, links, runtimes, git identity
+dot                 # re-apply: packages, links, runtimes, git identity, macOS preferences
 dot --profile personal
-dot --defaults      # also apply macOS system preferences
+dot --no-defaults   # skip macOS system preferences
 ```
 
 The profile (`base`, `work`, `personal`) is saved in `~/.config/dotfiles/profile`.
@@ -28,6 +28,7 @@ The profile (`base`, `work`, `personal`) is saved in `~/.config/dotfiles/profile
 4. Applies the overlay, if present: its `Brewfile`, its `links.nuon` (`[{src, dest}]`, src relative to the overlay, dest relative to `$HOME`), and its `gitconfig` (included by `config/git/config`).
 5. Generates starship and mise init scripts into nushell's vendor autoload dir, runs `mise install`, and sets a default rust toolchain if none exists.
 6. Installs agent skills listed in `config/skills.nuon` with the [`skills`](https://github.com/vercel-labs/skills) CLI, globally for Claude Code. Files go in `~/.agents/skills`, linked from `~/.claude/skills`. Skills already in `~/.agents/skills` are left alone.
+7. On macOS, unless `--no-defaults`: applies system preferences from `os/macos/defaults.nu` (security, UI, typing, screenshots, trackpad, Dock, Finder, power), then restarts Dock, Finder and SystemUIServer.
 
 ## Layout
 
