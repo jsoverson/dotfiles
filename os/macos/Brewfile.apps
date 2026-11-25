@@ -1,5 +1,6 @@
 # GUI apps for every macOS machine. Skipped with --headless.
 brew "mas"
+cask "alfred"
 cask "ghostty"
 cask "visual-studio-code"
 
