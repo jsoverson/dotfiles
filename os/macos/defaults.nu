@@ -76,6 +76,20 @@ export def keyboard [domain = "com.apple.HIToolbox"] {
   ^defaults write $domain AppleCurrentKeyboardLayoutInputSourceID -string com.apple.keylayout.Colemak
 }
 
+# Caps Lock -> Escape on the built-in keyboard (vendor 0, product 0), as System Settings stores it.
+# `defaults` persists it for the next login; hidutil applies it now.
+const caps_lock = 0x700000039
+const escape = 0x700000029
+
+# With a plist path (tests), only that file is written.
+export def caps-to-escape [plist?: string] {
+  let target = if $plist == null { [-currentHost write -g] } else { [write $plist] }
+  ^defaults ...$target com.apple.keyboard.modifiermapping.0-0-0 -array $"<dict><key>HIDKeyboardModifierMappingDst</key><integer>($escape)</integer><key>HIDKeyboardModifierMappingSrc</key><integer>($caps_lock)</integer></dict>"
+  if $plist == null {
+    ^hidutil property --matching '{"VendorID":0,"ProductID":0,"PrimaryUsagePage":1,"PrimaryUsage":6}' --set $'{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":($caps_lock),"HIDKeyboardModifierMappingDst":($escape)}]}' | ignore
+  }
+}
+
 # Spotlight categories, copied from the primary Mac's com.apple.Spotlight.
 const spotlight_items = [
   [name enabled];
@@ -155,6 +169,7 @@ export def main [] {
   ^chflags nohidden ($env.HOME | path join Library)
   for p in $pmset { ^sudo pmset ...$p }
   keyboard
+  caps-to-escape
   spotlight
   ^/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
   alfred

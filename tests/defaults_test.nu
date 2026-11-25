@@ -28,6 +28,11 @@ def main [] {
   assert equal ($selected | where InputSourceKind == "Keyboard Layout" | get "KeyboardLayout ID") [12825]
   assert equal (^plutil -extract AppleCurrentKeyboardLayoutInputSourceID raw -o - $"($kb).plist" | str trim) "com.apple.keylayout.Colemak"
 
+  let caps = $root | path join caps
+  defaults caps-to-escape $caps
+  let mapping = ^plutil -convert json -o - $"($caps).plist" | from json | get "com.apple.keyboard.modifiermapping.0-0-0"
+  assert equal $mapping [{HIDKeyboardModifierMappingDst: 30064771113, HIDKeyboardModifierMappingSrc: 30064771129}]
+
   rm -r $root
   print "defaults_test ok"
 }

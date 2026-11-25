@@ -1,9 +1,16 @@
 # GUI apps for every macOS machine. Skipped with --headless.
 brew "mas"
+cask "1password"
 cask "alfred"
+cask "cmux"
+cask "docker-desktop"
 cask "ghostty"
+cask "obsidian"
+cask "parallels"
+cask "slack"
 cask "visual-studio-code"
+cask "vivaldi"
+cask "zed"
 
 # App Store apps need an App Store sign-in first; failures here only warn.
-# mas "Keynote", id: 409183694
-# mas "Pixelmator Pro", id: 1289583905
+mas "Xcode", id: 497799835
