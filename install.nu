@@ -7,7 +7,9 @@ const repo = path self | path expand | path dirname
 const link_mod = $repo | path join lib link.nu
 const os_install = $repo | path join os $nu.os-info.name install.nu
 const defaults_mod = $repo | path join os macos defaults.nu
+const rust_mod = $repo | path join lib rust.nu
 use $link_mod
+use $rust_mod
 use $os_install
 use $defaults_mod
 
@@ -57,12 +59,6 @@ def generate-vendor-autoload [] {
   ^mise activate nu | save -f ($dir | path join mise.nu)
 }
 
-def runtimes [] {
-  ^mise install --yes
-  # rustup 1.29 reports `stable (default)` before anything is installed, so check the toolchains dir.
-  let toolchains = $env.HOME | path join .rustup toolchains
-  if (not ($toolchains | path exists)) or (ls $toolchains | is-empty) { ^rustup default stable }
-}
 
 # Agent skills via the `skills` CLI (vercel-labs/skills), from config/skills.nuon.
 # ~/.agents/skills holds the files; ~/.claude/skills links to them. Installs only skills missing
@@ -179,7 +175,8 @@ def main [
   }
 
   generate-vendor-autoload
-  runtimes
+  ^mise install --yes
+  rust --headless=$headless
   install-skills $home
   if (not $no_defaults) and $nu.os-info.name == "macos" { defaults }
   print $"done \(profile: ($profile)\)"

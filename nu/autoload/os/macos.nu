@@ -2,5 +2,4 @@
 $env.HOMEBREW_PREFIX = "/opt/homebrew"
 $env.HOMEBREW_CELLAR = "/opt/homebrew/Cellar"
 $env.HOMEBREW_REPOSITORY = "/opt/homebrew"
-# rustup is keg-only in Homebrew; its bin holds the cargo/rustc proxies.
-$env.PATH = ["/opt/homebrew/bin" "/opt/homebrew/sbin" "/opt/homebrew/opt/rustup/bin" ...$env.PATH] | uniq
+$env.PATH = ["/opt/homebrew/bin" "/opt/homebrew/sbin" ...$env.PATH] | uniq

@@ -1,0 +1,4 @@
+# Crates installed with cargo-binstall by lib/rust.nu.
+[
+  kache
+]
