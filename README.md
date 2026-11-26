@@ -26,8 +26,8 @@ To get a clean home directory without erasing the Mac and going through Setup As
 
 ```sh
 # recreate the account with the same name and UID
-sudo sysadminctl -deleteUser jsoverson interactive
-sudo sysadminctl -addUser jsoverson -UID 501 -admin -password - interactive
+sudo sysadminctl -deleteUser jsoverson -adminUser "$USER" -adminPassword -
+sudo sysadminctl -addUser jsoverson -UID 501 -admin -password - -adminUser "$USER" -adminPassword -
 sudo createhomedir -c -u jsoverson
 
 # allow SSH login (only needed if Remote Login is limited to specific users)
@@ -41,7 +41,7 @@ sudo install -o jsoverson -g staff -m 600 ~/.ssh/authorized_keys /Users/jsoverso
 Then log in as that user (or SSH in) and run the new-machine `curl | sh` command. Apps in `/Applications` and `/opt/homebrew` stay installed.
 
 - Keep the same UID: `/opt/homebrew` is owned by the account that installed Homebrew, and a new UID can't run `brew`. A test account with a different UID can't run `dot` past the package step.
-- `interactive` authenticates as the admin, which grants the new account a FileVault secure token. Check with `sysadminctl -secureTokenStatus jsoverson`.
+- `-adminUser` authenticates as the admin you are logged in as, which grants the new account a FileVault secure token. Check with `sysadminctl -secureTokenStatus jsoverson`.
 - If SSH closes right after `Server accepts key`, the account is missing from `com.apple.access_ssh`. Check with `dseditgroup -o checkmember -m jsoverson com.apple.access_ssh`.
 - `dot` creates a new SSH key, so delete the old one from GitHub (`gh ssh-key list`, `gh ssh-key delete`).
 
