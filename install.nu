@@ -117,8 +117,19 @@ def identity [home: string, profile: string] {
 
 # Separate admin account for recreating the daily account (README: Resetting the user account).
 # Created once with a FileVault secure token, SSH access and this user's authorized keys.
+# Every run refreshes ~/reset-daily-user in its home, with this user's name and UID filled in.
 def reset-user [home: string, name = "reset"] {
-  if (^id $name | complete).exit_code == 0 { return }
+  if (^id $name | complete).exit_code != 0 { create-reset-user $home $name }
+  let tmp = mktemp -t
+  open --raw ($repo | path join os macos reset-daily-user.sh)
+  | str replace __USER__ $env.USER
+  | str replace __UID__ (^id -u | str trim)
+  | save -f $tmp
+  ^sudo install -o $name -g staff -m 700 $tmp $"/Users/($name)/reset-daily-user"
+  rm $tmp
+}
+
+def create-reset-user [home: string, name: string] {
   print $"creating admin account '($name)': enter its new password, then yours"
   ^sudo sysadminctl -addUser $name -fullName "Reset User" -admin -password - -adminUser $env.USER -adminPassword -
   ^sudo createhomedir -c -u $name
