@@ -13,4 +13,3 @@ cask "vivaldi"
 cask "zed"
 
 # App Store apps need an App Store sign-in first; failures here only warn.
-mas "Xcode", id: 497799835
