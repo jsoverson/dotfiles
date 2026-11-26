@@ -51,6 +51,8 @@ const prefs = [
   [com.apple.WindowManager StageManagerHideWidgets -bool true]
   # Input menu in the menu bar, for switching keyboard layouts
   [com.apple.TextInputMenu visible -bool true]
+  # Cursor: double size, default colors
+  [com.apple.universalaccess mouseDriverCursorSize -float 2]
 ]
 
 # Keyboard layouts: Colemak selected, U.S. available from the input menu.
