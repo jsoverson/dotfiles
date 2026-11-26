@@ -178,8 +178,9 @@ const pmset = [
 ]
 
 export def main [] {
-  for p in $prefs {
-    ^defaults write $p.domain $p.key $p.type ($p.value | into string)
+  # Protected domains (com.apple.universalaccess) fail unless the terminal app has Full Disk Access.
+  let failed = $prefs | where {|p|
+    (^defaults write $p.domain $p.key $p.type ($p.value | into string) | complete).exit_code != 0
   }
   ^defaults write com.apple.screencapture location -string ($env.HOME | path join Documents screenshots)
   ^defaults write com.apple.dock persistent-apps -array
@@ -192,4 +193,8 @@ export def main [] {
   ^/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
   alfred
   for app in [Dock Finder SystemUIServer Spotlight TextInputMenuAgent] { try { ^killall $app } }
+  if ($failed | is-not-empty) {
+    print $"skipped writes to ($failed | get domain | uniq | str join ', '): give this terminal app Full Disk Access in the Settings pane that opened, restart it, then re-run dot"
+    ^open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+  }
 }
