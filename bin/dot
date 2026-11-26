@@ -1,1 +1,12 @@
-../install.nu
+#!/usr/bin/env nu
+# Update this repo and the work overlay (fast-forward only), then run install.nu with the same arguments.
+# The pull happens here because nushell parses install.nu and its modules before running any of it.
+
+const repo = path self | path expand | path dirname | path dirname
+
+def --wrapped main [...args] {
+  for dir in [$repo ($env.HOME | path join .dotfiles-work)] {
+    if ($dir | path join .git | path exists) { ^git -C $dir pull --ff-only }
+  }
+  ^nu ($repo | path join install.nu) ...$args
+}

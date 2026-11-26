@@ -8,7 +8,7 @@ Bootstraps a machine and its shell environment. macOS is implemented; Linux and 
 curl -fsSL https://raw.githubusercontent.com/jsoverson/dotfiles/main/bootstrap.sh | sh -s -- --profile work
 ```
 
-`bootstrap.sh` installs Homebrew (and with it the Command Line Tools), installs nushell, clones this repo to `~/dotfiles`, and runs `install.nu`. Everything after that is nushell.
+`bootstrap.sh` installs Homebrew (and with it the Command Line Tools), installs nushell, clones this repo to `~/dotfiles` (or fast-forwards an existing clone), and runs `install.nu`. Everything after that is nushell.
 
 ## Existing machine
 
@@ -17,6 +17,8 @@ dot                 # re-apply: packages, links, runtimes, git identity, macOS p
 dot --profile personal
 dot --no-defaults   # skip macOS system preferences
 ```
+
+`dot` first runs `git pull --ff-only` in `~/dotfiles` and `~/.dotfiles-work`, so it stops if either has local commits that diverge from the remote. To apply the checkout as it is, run `nu ~/dotfiles/install.nu` instead.
 
 The profile (`base`, `work`, `personal`) is saved in `~/.config/dotfiles/profile`.
 

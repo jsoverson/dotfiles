@@ -1,8 +1,8 @@
 #!/usr/bin/env nu
 # Provision this machine: packages, config links, runtimes, git identity. Safe to re-run.
-# Also available as `dot` (bin/dot links here).
+# `dot` (bin/dot) pulls this repo first, then runs this.
 
-# Module paths go through $repo because relative `use` would resolve against the bin/dot symlink.
+# Module paths go through $repo so they resolve when run from another directory.
 const repo = path self | path expand | path dirname
 const link_mod = $repo | path join lib link.nu
 const os_install = $repo | path join os $nu.os-info.name install.nu

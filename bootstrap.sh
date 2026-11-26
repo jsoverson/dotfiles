@@ -26,7 +26,11 @@ fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 brew list --formula nushell >/dev/null 2>&1 || brew install nushell
-[ -d "$DOTFILES_DIR/.git" ] || git clone "$REPO" "$DOTFILES_DIR"
+if [ -d "$DOTFILES_DIR/.git" ]; then
+  git -C "$DOTFILES_DIR" pull --ff-only
+else
+  git clone "$REPO" "$DOTFILES_DIR"
+fi
 
 # Under `curl | sh`, stdin is the script; give install.nu the terminal for its prompts when there is one.
 if (exec </dev/tty) 2>/dev/null; then
