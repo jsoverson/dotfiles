@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+  "app": {
+    "preferredEditor": "code"
+  },
+  "browser": {
+    "openTerminalLinksInCmuxBrowser": false,
+    "interceptTerminalOpenCommandInCmuxBrowser": false
+  },
+  "shortcuts": {
+    "bindings": {
+      "prevSurface": "cmd+left",
+      "nextSurface": "cmd+right",
+      "prevSidebarTab": "cmd+up",
+      "nextSidebarTab": "cmd+down"
+    }
+  }
+}

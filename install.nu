@@ -25,6 +25,7 @@ def base-links []: nothing -> list<record<src: string, dest: string>> {
     [nu/autoload ($nu.user-autoload-dirs | first)]
     [config/starship.toml .config/starship.toml]
     [config/ghostty .config/ghostty/config]
+    [config/cmux.json .config/cmux/cmux.json]
     [config/mise.toml .config/mise/config.toml]
     [config/git/config .config/git/config]
     [config/git/ignore .config/git/ignore]

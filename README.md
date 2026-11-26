@@ -45,7 +45,7 @@ Then log in as that user (or SSH in) and run the new-machine `curl | sh` command
 4. Applies the overlay, if present: its `Brewfile`, its `links.nuon` (`[{src, dest}]`, src relative to the overlay, dest relative to `$HOME`), and its `gitconfig` (included by `config/git/config`).
 5. Generates starship and mise init scripts into nushell's vendor autoload dir, runs `mise install`, then `lib/rust.nu`: installs rustup (official installer) or updates it to the latest stable, installs cargo-binstall, binstalls the crates in `config/cargo.nuon` (kache), and runs `kache init --yes --no-shell` unless `--headless`.
 6. Installs agent skills listed in `config/skills.nuon` with the [`skills`](https://github.com/vercel-labs/skills) CLI, globally for Claude Code. Files go in `~/.agents/skills`, linked from `~/.claude/skills`. Skills already in `~/.agents/skills` are left alone.
-7. On macOS, unless `--no-defaults`: applies system preferences from `os/macos/defaults.nu` (security, UI, typing, screenshots, trackpad, Dock, Finder, widgets, Spotlight categories, power, Colemak keyboard with U.S. in the input menu, Caps Lock as Escape on the built-in keyboard, double-size cursor). Moves cmd+space from Spotlight to Alfred and adds Alfred as a login item, then restarts the affected apps.
+7. On macOS, unless `--no-defaults`: applies system preferences from `os/macos/defaults.nu` (security, UI, typing, screenshots, trackpad, Dock, Finder, widgets, Spotlight categories, power, Colemak keyboard with U.S. in the input menu, Caps Lock as Escape on the built-in keyboard, double-size cursor, reduced motion, shake to locate off). Moves cmd+space from Spotlight to Alfred and adds Alfred as a login item, then restarts the affected apps.
 
 ## Layout
 
@@ -56,7 +56,7 @@ Then log in as that user (or SSH in) and run the new-machine `curl | sh` command
 | `lib/link.nu` | Symlink plan/apply |
 | `os/<os>/` | Per-OS packages and settings |
 | `nu/autoload/` | Nushell config, linked as nushell's autoload dir; `os/<os>.nu` is sourced per OS |
-| `config/` | starship, ghostty, mise, git, zsh, shared `paths` list |
+| `config/` | starship, ghostty, cmux, mise, git, zsh, shared `paths` list |
 | `claude/` | `~/.claude/CLAUDE.md` |
 | `tests/` | `nu tests/<name>.nu` |
 

@@ -53,6 +53,9 @@ const prefs = [
   [com.apple.TextInputMenu visible -bool true]
   # Cursor: double size, default colors
   [com.apple.universalaccess mouseDriverCursorSize -float 2]
+  [com.apple.universalaccess reduceMotion -bool true]
+  # Shake to locate cursor: off
+  [NSGlobalDomain CGDisableCursorLocationMagnification -bool true]
 ]
 
 # Keyboard layouts: Colemak selected, U.S. available from the input menu.
