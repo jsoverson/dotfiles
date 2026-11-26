@@ -1,0 +1,163 @@
+#!/usr/bin/env nu
+
+const BACKUP = "_backup"
+const MAX_AGE = 56day
+
+# Run git in $dir without prompting, hanging on ssh, or rewriting the index.
+def --wrapped git-run [dir: string, ...args]: nothing -> record {
+  with-env {
+    GIT_TERMINAL_PROMPT: "0"
+    GIT_OPTIONAL_LOCKS: "0"
+    GIT_SSH_COMMAND: "ssh -oBatchMode=yes -oConnectTimeout=10"
+  } {
+    ^git -C $dir ...$args | complete
+  }
+}
+
+def --wrapped count-lines [dir: string, ...args]: nothing -> int {
+  (git-run $dir ...$args).stdout | lines | length
+}
+
+# Newest of: dir created, direct children modified, newest commit on a local branch, HEAD, or stash.
+# The dir's own mtime is left out: dev-clean bumps it by deleting node_modules or target.
+# .git is excluded from the children: fetch and status touch it, the commit date covers it.
+def last-activity [dir: string]: nothing -> datetime {
+  let self = (ls -lD $dir | first)
+  let children = (ls -a $dir | where ($it.name | path basename) != ".git" | get modified)
+  let commit = if ($dir | path join ".git" | path exists) {
+    # local refs only: remote-tracking refs move on every fetch of an active upstream
+    (git-run $dir log "-1" --branches --glob=refs/stash HEAD --format=%cI).stdout | lines | each { into datetime }
+  } else { [] }
+
+  [$self.created ...$children ...$commit] | compact | math max
+}
+
+# Category plus git facts for one project. Fetches every remote unless $fetch is false,
+# in which case remotes are assumed reachable and local tracking refs are trusted.
+def classify [dir: string, fetch: bool]: nothing -> record {
+  if (ls -a $dir | is-empty) { return { category: "empty" } }
+  if not ($dir | path join ".git" | path exists) { return { category: "no-version-control" } }
+
+  # a .git that git cannot use makes git report a parent repo or fail
+  let top = (git-run $dir rev-parse --show-toplevel)
+  if $top.exit_code != 0 or ($top.stdout | str trim | path expand) != ($dir | path expand) {
+    return { category: "broken-git" }
+  }
+
+  let remotes = ((git-run $dir remote).stdout | lines)
+  # collected first so every remote is fetched; `any` on the stream would stop at the first success
+  let fetched = (
+    (if $fetch { $remotes } else { [] })
+    | each {|r|
+        print $"fetching ($dir | path basename) ($r)"
+        (git-run $dir fetch $r).exit_code == 0
+      }
+  )
+  let reachable = (not $fetch) or ($fetched | any {|ok| $ok })
+
+  let unpushed = (count-lines $dir log --branches --not --remotes --oneline)
+  let stashes = (count-lines $dir stash list)
+  let dirty = (count-lines $dir status --porcelain)
+
+  let category = if ($remotes | is-empty) {
+    "no-remotes"
+  } else if not $reachable {
+    "remote-unreachable"
+  } else if $unpushed + $stashes > 0 {
+    "unpushed"
+  } else if $dirty > 0 {
+    "uncommitted"
+  } else {
+    "stale"
+  }
+
+  let url = if ($remotes | is-empty) { {} } else {
+    let name = if "origin" in $remotes { "origin" } else { $remotes | first }
+    { remote_url: ((git-run $dir remote get-url $name).stdout | str trim) }
+  }
+
+  { category: $category, unpushed_commits: $unpushed, dirty_files: $dirty, stashes: $stashes } | merge $url
+}
+
+# Move projects untouched for 8 weeks into _backup/YYYY-MM-DD/<category>/ for audit.
+def main [
+  root: path = "~/development/src"  # directory whose children are classified
+  --dry-run (-n)                    # print the plan; move nothing, write no manifest
+  --no-fetch                        # skip git fetch; nothing is classed remote-unreachable
+] {
+  let root = ($root | path expand)
+  let cutoff = (date now) - $MAX_AGE
+
+  # age is decided for every project before any fetch
+  let entries = (ls -la $root | where ($it.name | path basename) != $BACKUP)
+  let old = (
+    $entries
+    | where type == dir
+    | each {|e| { name: ($e.name | path basename), path: $e.name, last_activity: (last-activity $e.name) } }
+    | where last_activity < $cutoff
+    | update last_activity { format date "%Y-%m-%d" }
+  )
+  let files = (
+    $entries
+    | where type == file
+    | each {|e| {
+        name: ($e.name | path basename)
+        path: $e.name
+        last_activity: ([$e.created $e.modified] | compact | math max)
+        category: "misc-files"
+      } }
+    | where last_activity < $cutoff
+    | update last_activity { format date "%Y-%m-%d" }
+  )
+
+  let plan = ($old | each {|p| $p | merge (classify $p.path (not $no_fetch)) }) ++ $files
+
+  let with_remote = ($plan | where category in [remote-unreachable unpushed uncommitted stale])
+  if ($with_remote | is-not-empty) and ($with_remote | all {|p| $p.category == "remote-unreachable" }) {
+    error make --unspanned { msg: "every fetch failed, so the network looks down; nothing was moved" }
+  }
+
+  if $dry_run {
+    print ($plan | select name category last_activity | sort-by category name)
+    print ($plan | get category | uniq --count)
+    return
+  }
+
+  let dest_root = ($root | path join $BACKUP (date now | format date "%Y-%m-%d"))
+
+  let moved = (
+    $plan
+    | each {|p|
+        let dest = ($dest_root | path join $p.category $p.name)
+        if ($dest | path exists) {
+          print $"skip ($p.name): ($dest) exists"
+          return
+        }
+        mkdir ($dest | path dirname)
+        try {
+          mv $p.path $dest
+          print $"($p.category) ($p.name)"
+          $p
+        } catch {|e|
+          print $"failed ($p.name): ($e.msg)"
+        }
+      }
+    | compact
+  )
+
+  if ($moved | is-empty) { return }
+
+  let manifest = ($dest_root | path join "manifest.toml")
+  let existing = if ($manifest | path exists) { open $manifest | get projects } else { {} }
+  let added = (
+    $moved
+    | reduce --fold {} {|p, acc|
+        $acc | merge { ($p.name): ($p | reject name path | insert original_path $p.path) }
+      }
+  )
+
+  # existing entries win, so a rerun never rewrites an earlier record
+  { projects: ($added | merge $existing) } | save --force $manifest
+
+  print ($moved | get category | uniq --count)
+}

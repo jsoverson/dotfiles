@@ -1,0 +1,54 @@
+#!/usr/bin/env nu
+
+# Paths to delete under $dir: every node_modules, and target/ next to a Cargo.lock.
+# Does not descend into node_modules, target, .git, or symlinked dirs.
+def doomed [dir: string]: nothing -> list<string> {
+  let has_lock = ($dir | path join "Cargo.lock" | path exists)
+  let entries = try { ls -a $dir } catch { [] }
+
+  $entries
+  | each {|e|
+      match ($e.name | path basename) {
+        "node_modules" => [$e.name]
+        "target" => (if $has_lock and $e.type == dir { [$e.name] } else { [] })
+        ".git" => []
+        _ => (if $e.type == dir { doomed $e.name } else { [] })
+      }
+    }
+  | flatten
+}
+
+# Delete node_modules and cargo target dirs under a directory.
+def main [
+  root: path = "."   # directory to start in
+  --dry-run (-n)     # print what would be deleted without deleting
+] {
+  let root = ($root | path expand)
+  let root_parts = ($root | path split)
+  let home_parts = ($env.HOME | path expand | path split)
+
+  if ($home_parts | take ($root_parts | length)) == $root_parts {
+    error make --unspanned { msg: $"refusing to run in ($root): it contains your home directory" }
+  }
+
+  let before = (free $root)
+  doomed $root
+  | each {|p|
+      print $"rm ($p)"
+      if not $dry_run {
+        # rm can fail with "directory not empty" on large trees; a second pass clears the rest
+        try { rm -rf --permanent $p } catch {
+          try { rm -rf --permanent $p } catch {|e| print $"failed ($p): ($e.msg)" }
+        }
+      }
+    }
+  | ignore
+  let after = (free $root)
+
+  print $"free before: ($before)  free after: ($after)  recovered: ($after - $before)"
+}
+
+# Free space on the volume containing $dir.
+def free [dir: string]: nothing -> filesize {
+  (^df -Pk $dir | lines | last | split row -r '\s+' | get 3 | into int) * 1kb
+}
