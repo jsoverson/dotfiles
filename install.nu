@@ -115,6 +115,29 @@ def identity [home: string, profile: string] {
   }
 }
 
+# Separate admin account for recreating the daily account (README: Resetting the user account).
+# Created once with a FileVault secure token, SSH access and this user's authorized keys.
+def reset-user [home: string, name = "reset"] {
+  if (^id $name | complete).exit_code == 0 { return }
+  print $"creating admin account '($name)': enter its new password, then yours"
+  ^sudo sysadminctl -addUser $name -fullName "Reset User" -admin -password - -adminUser $env.USER -adminPassword -
+  ^sudo createhomedir -c -u $name
+  # Without a token the account can't unlock FileVault after a restart.
+  if ((^sysadminctl -secureTokenStatus $name | complete).stderr =~ DISABLED) {
+    print $"granting ($name) a FileVault secure token: enter its password, then yours"
+    ^sudo sysadminctl -secureTokenOn $name -password - -adminUser $env.USER -adminPassword -
+  }
+  # The group exists only when Remote Login is limited to specific users.
+  if (^dscl . -read /Groups/com.apple.access_ssh | complete).exit_code == 0 {
+    ^sudo dseditgroup -o edit -a $name -t user com.apple.access_ssh
+  }
+  let keys = $home | path join .ssh authorized_keys
+  if ($keys | path exists) {
+    ^sudo install -d -o $name -g staff -m 700 $"/Users/($name)/.ssh"
+    ^sudo install -o $name -g staff -m 600 $keys $"/Users/($name)/.ssh/authorized_keys"
+  }
+}
+
 def main [
   --profile: string  # base, work or personal; remembered after first use
   --headless         # skip GUI apps, SSH key and GitHub auth (CI)
@@ -135,6 +158,7 @@ def main [
   link-all (base-links | resolve $repo $home) $home
 
   if not $headless { identity $home $profile }
+  if (not $headless) and $nu.os-info.name == "macos" { reset-user $home }
 
   let overlay = $home | path join .dotfiles-work
   if ($overlay | path exists) {
