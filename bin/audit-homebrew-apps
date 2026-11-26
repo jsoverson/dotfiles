@@ -1,0 +1,26 @@
+#!/usr/bin/env nu
+# List Homebrew formulae and casks installed on request that no bootstrap Brewfile lists.
+
+const repo = path self | path dirname | path dirname
+
+# Entries from Brewfile text, with tap prefixes dropped so names match `brew` output.
+export def brewfile-entries [text: string] {
+  $text
+  | parse -r '(?m)^\s*(?<type>brew|cask)\s+"(?<name>[^"]+)"'
+  | update name { path basename }
+  | update type { if $in == brew { "formula" } else { "cask" } }
+}
+
+export def unlisted [installed: table, listed: table] {
+  $installed | where {|i| ($listed | where type == $i.type and name == $i.name | is-empty) }
+}
+
+def main [] {
+  let brewfiles = glob ($repo | path join os macos Brewfile*)
+    | append ($env.HOME | path join .dotfiles-work Brewfile)
+    | where { path exists }
+  let listed = $brewfiles | each { open --raw $in | brewfile-entries $in } | flatten
+  let installed = (^brew leaves --installed-on-request | lines | each {|n| {type: formula, name: ($n | path basename)} })
+    | append (^brew list --cask -1 | lines | each {|n| {type: cask, name: $n} })
+  unlisted $installed $listed
+}
